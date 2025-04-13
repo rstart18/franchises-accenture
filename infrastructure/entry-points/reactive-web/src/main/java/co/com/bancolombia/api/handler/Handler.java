@@ -1,6 +1,8 @@
 package co.com.bancolombia.api.handler;
 
 import co.com.bancolombia.api.dto.request.ProductRequestDto;
+import co.com.bancolombia.api.dto.response.ApiResponse;
+import co.com.bancolombia.api.dto.response.ProductResponseDto;
 import co.com.bancolombia.api.mapper.ProductMapper;
 import co.com.bancolombia.gateways.api.FranchiseRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +29,9 @@ public class Handler implements IHandler {
                                 .map(this.productMapper::toDto)
                                 .flatMap(productResponseDto ->
                                         ServerResponse.status(HttpStatus.CREATED)
-                                                .bodyValue(productResponseDto)));
+                                                .bodyValue(ApiResponse.<ProductResponseDto>builder()
+                                                        .data(List.of(productResponseDto))
+                                                        .build())));
     }
 
     @Override

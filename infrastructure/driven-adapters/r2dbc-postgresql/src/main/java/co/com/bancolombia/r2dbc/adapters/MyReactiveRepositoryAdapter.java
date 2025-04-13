@@ -1,9 +1,9 @@
 package co.com.bancolombia.r2dbc.adapters;
 
+import co.com.bancolombia.gateways.spi.StorageRepository;
 import co.com.bancolombia.model.Branch;
 import co.com.bancolombia.model.Franchise;
 import co.com.bancolombia.model.Product;
-import co.com.bancolombia.gateways.spi.StorageRepository;
 import co.com.bancolombia.r2dbc.mapper.ProductMapper2;
 import co.com.bancolombia.r2dbc.repository.MyReactiveRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +30,10 @@ public class MyReactiveRepositoryAdapter implements StorageRepository {
     public Mono<Product> saveProduct(Product product) {
         return this.myReactiveRepository.save(this.productMapper2.toEntity(product))
                 .map(productMapper2::toModel);
+    }
+
+    @Override
+    public Mono<Boolean> existsProductByName(String name) {
+        return this.myReactiveRepository.existsByName(name);
     }
 }

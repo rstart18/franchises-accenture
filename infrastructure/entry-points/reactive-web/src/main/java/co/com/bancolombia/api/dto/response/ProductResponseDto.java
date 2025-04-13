@@ -12,6 +12,4 @@ import lombok.Setter;
 public class ProductResponseDto {
     private long id;
     private String name;
-    private int stock;
-    private long branchId;
 }

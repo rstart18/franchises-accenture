@@ -1,13 +1,17 @@
 package co.com.bancolombia.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+@Builder
+public class BranchProduct {
     private Long id;
-    private String name;
+    private Long branchId;
+    private Long productId;
+    private int stock;
 }
