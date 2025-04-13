@@ -17,5 +17,11 @@ public interface IHandler {
 
     public Mono<ServerResponse> removeProductFromBranch(ServerRequest request);
 
+    Mono<ServerResponse> updateFranchiseName(ServerRequest request);
+
+    Mono<ServerResponse> updateBranchName(ServerRequest request);
+
+    Mono<ServerResponse> updateProductName(ServerRequest request);
+
     Mono<ServerResponse> getTopProductsByBranch(ServerRequest request);
 }

@@ -71,6 +71,23 @@ public class MyReactiveRepositoryAdapter implements StorageRepository {
     }
 
     @Override
+    public Mono<Franchise> findFranchiseById(long franchiseId) {
+        return this.reactiveFranchiseRepository.findById(franchiseId)
+                .map(productMapper2::toModel);
+    }
+
+    public Mono<Branch> findBranchById(long branchId) {
+        return this.reactiveBranchRepository.findById(branchId)
+                .map(productMapper2::toModel);
+    }
+
+    @Override
+    public Mono<Product> findProductById(long productId) {
+        return this.reactiveProductRepository.findById(productId)
+                .map(productMapper2::toModel);
+    }
+
+    @Override
     public Mono<Boolean> existsBranchProduct(long branchId, long productId) {
         return this.reactiveBranchProductRepository.existsByBranchIdAndProductId(branchId, productId);
     }

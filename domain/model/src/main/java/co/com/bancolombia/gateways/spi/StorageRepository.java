@@ -17,6 +17,12 @@ public interface StorageRepository {
 
     Mono<Product> saveProduct(Product product);
 
+    Mono<Franchise> findFranchiseById(long franchiseId);
+
+    Mono<Branch> findBranchById(long branchId);
+
+    Mono<Product> findProductById(long productId);
+
     Mono<Boolean> existsFranchiseByName(String name);
 
     Mono<Boolean> existsBranchByName(String name);

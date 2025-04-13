@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
-public interface FranchiseRepository {
+public interface BusinessRepository {
     Mono<Franchise> createFranchise(Franchise franchise);
 
     Mono<Branch> createBranch(Branch branch);
@@ -25,4 +25,10 @@ public interface FranchiseRepository {
     Mono<Void> removeProductFromBranch(Long branchId, Long productId);
 
     Flux<BranchProductInfo> findTopProductsByBranchForFranchise(Long franchiseId);
+
+    Mono<Void> updateFranchiseName(Long franchiseId, String newName);
+
+    Mono<Void> updateBranchName(Long branchId, String newName);
+
+    Mono<Void> updateProductName(Long productId, String newName);
 }

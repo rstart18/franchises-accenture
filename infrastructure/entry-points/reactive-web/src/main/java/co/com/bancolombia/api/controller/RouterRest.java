@@ -14,6 +14,9 @@ import static co.com.bancolombia.api.constants.constants.PATH_DELETE_PRODUCT_FRO
 import static co.com.bancolombia.api.constants.constants.PATH_FRANCHISE;
 import static co.com.bancolombia.api.constants.constants.PATH_PRODUCT;
 import static co.com.bancolombia.api.constants.constants.PATH_TOP_PRODUCTS_BY_BRANCH;
+import static co.com.bancolombia.api.constants.constants.PATH_UPDATE_BRANCH_NAME;
+import static co.com.bancolombia.api.constants.constants.PATH_UPDATE_FRANCHISE_NAME;
+import static co.com.bancolombia.api.constants.constants.PATH_UPDATE_PRODUCT_NAME;
 import static co.com.bancolombia.api.constants.constants.PATH_UPDATE_STOCK;
 import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
@@ -31,6 +34,9 @@ public class RouterRest {
                 .andRoute(POST(PATH_BRANCH), handler::createBranch)
                 .andRoute(POST(PATH_FRANCHISE), handler::createFranchise)
                 .andRoute(PUT(PATH_UPDATE_STOCK), handler::updateProductStock)
+                .andRoute(PUT(PATH_UPDATE_FRANCHISE_NAME), handler::updateFranchiseName)
+                .andRoute(PUT(PATH_UPDATE_BRANCH_NAME), handler::updateBranchName)
+                .andRoute(PUT(PATH_UPDATE_PRODUCT_NAME), handler::updateProductName)
                 .andRoute(DELETE(PATH_DELETE_PRODUCT_FROM_BRANCH), handler::removeProductFromBranch);
     }
 }

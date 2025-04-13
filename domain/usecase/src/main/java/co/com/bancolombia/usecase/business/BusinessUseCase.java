@@ -1,7 +1,7 @@
 package co.com.bancolombia.usecase.business;
 
 import co.com.bancolombia.exception.FranchiseException;
-import co.com.bancolombia.gateways.api.FranchiseRepository;
+import co.com.bancolombia.gateways.api.BusinessRepository;
 import co.com.bancolombia.gateways.spi.StorageRepository;
 import co.com.bancolombia.model.Branch;
 import co.com.bancolombia.model.BranchProduct;
@@ -11,7 +11,7 @@ import co.com.bancolombia.model.Product;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public record BusinessUseCase(StorageRepository storageRepository) implements FranchiseRepository {
+public record BusinessUseCase(StorageRepository storageRepository) implements BusinessRepository {
 
     @Override
     public Mono<Franchise> createFranchise(Franchise franchise) {
@@ -84,6 +84,55 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Fr
                     return storageRepository.saveBranchProduct(bp).then();
                 });
     }
+
+    @Override
+    public Mono<Void> updateFranchiseName(Long franchiseId, String newName) {
+        return storageRepository.existsFranchiseByName(newName)
+                .flatMap(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        return Mono.error(new FranchiseException.AlreadyExistsException("Franchise name already exists"));
+                    }
+                    return storageRepository.findFranchiseById(franchiseId)
+                            .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Franchise not found")))
+                            .flatMap(franchise -> {
+                                franchise.setName(newName);
+                                return storageRepository.saveFranchise(franchise).then();
+                            });
+                });
+    }
+
+    @Override
+    public Mono<Void> updateBranchName(Long branchId, String newName) {
+        return storageRepository.existsBranchByName(newName)
+                .flatMap(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        return Mono.error(new FranchiseException.AlreadyExistsException("Branch name already exists"));
+                    }
+                    return storageRepository.findBranchById(branchId)
+                            .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Branch not found")))
+                            .flatMap(branch -> {
+                                branch.setName(newName);
+                                return storageRepository.saveBranch(branch).then();
+                            });
+                });
+    }
+
+    @Override
+    public Mono<Void> updateProductName(Long productId, String newName) {
+        return storageRepository.existsProductByName(newName)
+                .flatMap(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        return Mono.error(new FranchiseException.AlreadyExistsException("Product name already exists"));
+                    }
+                    return storageRepository.findProductById(productId)
+                            .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Product not found")))
+                            .flatMap(product -> {
+                                product.setName(newName);
+                                return storageRepository.saveProduct(product).then();
+                            });
+                });
+    }
+
 
     @Override
     public Mono<Void> removeProductFromBranch(Long branchId, Long productId) {
