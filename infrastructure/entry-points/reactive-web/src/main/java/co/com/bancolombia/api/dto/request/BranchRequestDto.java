@@ -1,9 +1,15 @@
 package co.com.bancolombia.api.dto.request;
 
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BranchRequestDto {
     private String name;
     private long franchiseId;
