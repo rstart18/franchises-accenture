@@ -2,8 +2,10 @@ package co.com.bancolombia.gateways.spi;
 
 import co.com.bancolombia.model.Branch;
 import co.com.bancolombia.model.BranchProduct;
+import co.com.bancolombia.model.BranchProductInfo;
 import co.com.bancolombia.model.Franchise;
 import co.com.bancolombia.model.Product;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface StorageRepository {
@@ -24,4 +26,8 @@ public interface StorageRepository {
     Mono<Product> findProductByName(String productName);
 
     Mono<Boolean> existsBranchProduct(long branchId, long productId);
+
+    Mono<BranchProduct> findActiveBranchProductByBranchIdAndProductId(long branchId, long profuctId);
+
+    Flux<BranchProductInfo> findTopProductsByBranchForFranchise(Long franchiseId);
 }

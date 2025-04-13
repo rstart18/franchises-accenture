@@ -4,6 +4,7 @@ import co.com.bancolombia.api.dto.request.BranchProductRequestDto;
 import co.com.bancolombia.api.dto.request.BranchRequestDto;
 import co.com.bancolombia.api.dto.request.FranchiseRequestDto;
 import co.com.bancolombia.api.dto.request.ProductRequestDto;
+import co.com.bancolombia.api.dto.request.UpdateStockRequestDto;
 import co.com.bancolombia.api.dto.response.ApiResponse;
 import co.com.bancolombia.api.dto.response.BranchProductResponseDto;
 import co.com.bancolombia.api.dto.response.BranchResponseDto;
@@ -28,31 +29,27 @@ public class Handler implements IHandler {
 
     public Mono<ServerResponse> createFranchise(ServerRequest request) {
         return request.bodyToMono(FranchiseRequestDto.class)
-                .map(objectMapper::toModel)
-                .flatMap(franchiseRepository::createFranchise)
-                .map(objectMapper::toDto)
-                .map(dto -> ApiResponse.<FranchiseResponseDto>builder()
-                        .data(List.of(dto))
-                        .build())
-                .flatMap(response ->
-                        ServerResponse.status(HttpStatus.CREATED)
-                                .bodyValue(response)
-                );
+                .flatMap(franchiseRequestDto ->
+                        this.franchiseRepository.createFranchise(this.objectMapper.toModel(franchiseRequestDto))
+                                .map(this.objectMapper::toDto)
+                                .flatMap(franchiseResponseDto ->
+                                        ServerResponse.status(HttpStatus.CREATED)
+                                                .bodyValue(ApiResponse.<FranchiseResponseDto>builder()
+                                                        .data(List.of(franchiseResponseDto))
+                                                        .build())));
     }
-
 
     @Override
     public Mono<ServerResponse> createBranch(ServerRequest request) {
         return request.bodyToMono(BranchRequestDto.class)
-                .map(objectMapper::toModel)
-                .flatMap(franchiseRepository::createBranch)
-                .map(objectMapper::toDto)
-                .map(dto -> ApiResponse.<BranchResponseDto>builder()
-                        .data(List.of(dto))
-                        .build())
-                .flatMap(response ->
-                        ServerResponse.status(HttpStatus.CREATED)
-                                .bodyValue(response));
+                .flatMap(branchRequestDto ->
+                        franchiseRepository.createBranch(this.objectMapper.toModel(branchRequestDto))
+                                .map(this.objectMapper::toDto)
+                                .flatMap(branchResponseDto ->
+                                        ServerResponse.status(HttpStatus.CREATED)
+                                                .bodyValue(ApiResponse.<BranchResponseDto>builder()
+                                                        .data(List.of(branchResponseDto))
+                                                        .build())));
     }
 
 
@@ -61,11 +58,11 @@ public class Handler implements IHandler {
                 .flatMap(dto ->
                         franchiseRepository.addProductToBranch(dto.getProductName(), dto.getBranchId(), dto.getStock())
                                 .map(objectMapper::toDto)
-                                .map(resp -> ApiResponse.<BranchProductResponseDto>builder()
-                                        .data(List.of(resp))
-                                        .build())
-                                .flatMap(apiResp -> ServerResponse.status(HttpStatus.CREATED).bodyValue(apiResp))
-                );
+                                .flatMap(branchProductResponseDto ->
+                                        ServerResponse.status(HttpStatus.CREATED)
+                                                .bodyValue(ApiResponse.<BranchProductResponseDto>builder()
+                                                        .data(List.of(branchProductResponseDto))
+                                                        .build())));
     }
 
 
@@ -81,4 +78,34 @@ public class Handler implements IHandler {
                                                         .data(List.of(productResponseDto))
                                                         .build())));
     }
+
+    public Mono<ServerResponse> updateProductStock(ServerRequest request) {
+        Long branchId = Long.valueOf(request.pathVariable("branchId"));
+        Long productId = Long.valueOf(request.pathVariable("productId"));
+
+        return request.bodyToMono(UpdateStockRequestDto.class)
+                .flatMap(dto ->
+                        franchiseRepository.updateProductStock(branchId, productId, dto.getStock())
+                )
+                .then(ServerResponse.noContent().build());
+    }
+
+
+    public Mono<ServerResponse> removeProductFromBranch(ServerRequest request) {
+        Long branchId = Long.valueOf(request.pathVariable("branchId"));
+        Long productId = Long.valueOf(request.pathVariable("productId"));
+
+        return franchiseRepository.removeProductFromBranch(branchId, productId)
+                .then(ServerResponse.noContent().build());
+    }
+
+    public Mono<ServerResponse> getTopProductsByBranch(ServerRequest request) {
+        Long franchiseId = Long.valueOf(request.pathVariable("franchiseId"));
+
+        return franchiseRepository.findTopProductsByBranchForFranchise(franchiseId)
+                .collectList()
+                .flatMap(list -> ServerResponse.ok().bodyValue(list));
+    }
+
+
 }

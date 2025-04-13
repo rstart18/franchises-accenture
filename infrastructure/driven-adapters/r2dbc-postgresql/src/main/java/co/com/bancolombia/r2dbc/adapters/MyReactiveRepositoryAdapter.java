@@ -3,6 +3,7 @@ package co.com.bancolombia.r2dbc.adapters;
 import co.com.bancolombia.gateways.spi.StorageRepository;
 import co.com.bancolombia.model.Branch;
 import co.com.bancolombia.model.BranchProduct;
+import co.com.bancolombia.model.BranchProductInfo;
 import co.com.bancolombia.model.Franchise;
 import co.com.bancolombia.model.Product;
 import co.com.bancolombia.r2dbc.mapper.ProductMapper2;
@@ -12,6 +13,7 @@ import co.com.bancolombia.r2dbc.repository.ReactiveFranchiseRepository;
 import co.com.bancolombia.r2dbc.repository.ReactiveProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -71,5 +73,16 @@ public class MyReactiveRepositoryAdapter implements StorageRepository {
     @Override
     public Mono<Boolean> existsBranchProduct(long branchId, long productId) {
         return this.reactiveBranchProductRepository.existsByBranchIdAndProductId(branchId, productId);
+    }
+
+    @Override
+    public Mono<BranchProduct> findActiveBranchProductByBranchIdAndProductId(long branchId, long productId) {
+        return this.reactiveBranchProductRepository.findByBranchIdAndProductIdAndDeletedAtIsNull(branchId, productId)
+                .map(productMapper2::toModel);
+    }
+
+    @Override
+    public Flux<BranchProductInfo> findTopProductsByBranchForFranchise(Long franchiseId) {
+        return this.reactiveBranchProductRepository.findTopProductsByBranchForFranchise(franchiseId);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Table("branch_product")
 @Data
 @AllArgsConstructor
@@ -25,4 +27,7 @@ public class BranchProductEntity {
 
     @Column("stock")
     private int stock;
+
+    @Column("deleted_at")
+    private LocalDateTime deletedAt;
 }

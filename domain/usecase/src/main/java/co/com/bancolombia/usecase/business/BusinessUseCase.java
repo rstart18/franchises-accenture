@@ -5,8 +5,10 @@ import co.com.bancolombia.gateways.api.FranchiseRepository;
 import co.com.bancolombia.gateways.spi.StorageRepository;
 import co.com.bancolombia.model.Branch;
 import co.com.bancolombia.model.BranchProduct;
+import co.com.bancolombia.model.BranchProductInfo;
 import co.com.bancolombia.model.Franchise;
 import co.com.bancolombia.model.Product;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public record BusinessUseCase(StorageRepository storageRepository) implements FranchiseRepository {
@@ -71,6 +73,34 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Fr
                                 ? Mono.error(new FranchiseException.AlreadyExistsException("Product name already exists"))
                                 : this.storageRepository.saveProduct(product)
                 );
+    }
+
+    @Override
+    public Mono<Void> updateProductStock(Long branchId, Long productId, int stock) {
+        return storageRepository.findActiveBranchProductByBranchIdAndProductId(branchId, productId)
+                .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Relation not found or is deleted")))
+                .flatMap(bp -> {
+                    bp.setStock(stock);
+                    return storageRepository.saveBranchProduct(bp).then();
+                });
+    }
+
+    @Override
+    public Mono<Void> removeProductFromBranch(Long branchId, Long productId) {
+        return storageRepository.findActiveBranchProductByBranchIdAndProductId(branchId, productId)
+                .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Branch-Product relation not found")))
+                .flatMap(bp -> {
+                    if (bp.getDeletedAt() != null) {
+                        return Mono.error(new FranchiseException.AlreadyExistsException("Product already removed from this branch"));
+                    }
+                    bp.setDeletedAt(java.time.LocalDateTime.now());
+                    return storageRepository.saveBranchProduct(bp).then();
+                });
+    }
+
+    @Override
+    public Flux<BranchProductInfo> findTopProductsByBranchForFranchise(Long franchiseId) {
+        return storageRepository.findTopProductsByBranchForFranchise(franchiseId);
     }
 
 }

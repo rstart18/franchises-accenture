@@ -2,8 +2,10 @@ package co.com.bancolombia.gateways.api;
 
 import co.com.bancolombia.model.Branch;
 import co.com.bancolombia.model.BranchProduct;
+import co.com.bancolombia.model.BranchProductInfo;
 import co.com.bancolombia.model.Franchise;
 import co.com.bancolombia.model.Product;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
@@ -18,4 +20,9 @@ public interface FranchiseRepository {
 
     Mono<BranchProduct> addProductToBranch(String productName, Long branchId, int stock);
 
+    Mono<Void> updateProductStock(Long branchId, Long productId, int stock);
+
+    Mono<Void> removeProductFromBranch(Long branchId, Long productId);
+
+    Flux<BranchProductInfo> findTopProductsByBranchForFranchise(Long franchiseId);
 }

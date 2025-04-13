@@ -12,4 +12,10 @@ public interface IHandler {
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest);
 
     public Mono<ServerResponse> createFranchise(ServerRequest serverRequest);
+
+    public Mono<ServerResponse> updateProductStock(ServerRequest serverRequest);
+
+    public Mono<ServerResponse> removeProductFromBranch(ServerRequest request);
+
+    Mono<ServerResponse> getTopProductsByBranch(ServerRequest request);
 }
