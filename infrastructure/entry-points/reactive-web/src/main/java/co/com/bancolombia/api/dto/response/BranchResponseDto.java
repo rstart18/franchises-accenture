@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FranchiseResponseDto {
-    private long id;
+public class BranchResponseDto {
+    private Long id;
     private String name;
-    private String nit;
+    private Long franchiseId;
 }

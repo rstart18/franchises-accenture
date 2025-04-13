@@ -5,7 +5,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 public interface IHandler {
-    public Mono<ServerResponse> createProduct(ServerRequest serverRequest);
     public Mono<ServerResponse> createBranch(ServerRequest serverRequest);
+
+    public Mono<ServerResponse> addProductToBranch(ServerRequest request);
+
+    public Mono<ServerResponse> createProduct(ServerRequest serverRequest);
+
     public Mono<ServerResponse> createFranchise(ServerRequest serverRequest);
 }
