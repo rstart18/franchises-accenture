@@ -33,7 +33,6 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
                 );
     }
 
-
     @Override
     public Mono<BranchProduct> createBranchProduct(BranchProduct branchProduct) {
         return this.storageRepository.saveBranchProduct(branchProduct);
@@ -64,7 +63,6 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
                 );
     }
 
-
     @Override
     public Mono<Product> createProduct(Product product) {
         return this.storageRepository.existsProductByName(product.getName())
@@ -88,68 +86,61 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
     @Override
     public Mono<Void> updateFranchiseName(Long franchiseId, String newName) {
         return storageRepository.existsFranchiseByName(newName)
-                .flatMap(exists -> {
-                    if (Boolean.TRUE.equals(exists)) {
-                        return Mono.error(new FranchiseException.AlreadyExistsException("Franchise name already exists"));
-                    }
-                    return storageRepository.findFranchiseById(franchiseId)
-                            .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Franchise not found")))
-                            .flatMap(franchise -> {
-                                franchise.setName(newName);
-                                return storageRepository.saveFranchise(franchise).then();
-                            });
-                });
+                .flatMap(exists -> Boolean.TRUE.equals(exists)
+                        ? Mono.error(new FranchiseException.AlreadyExistsException("Franchise name already exists"))
+                        : storageRepository.findFranchiseById(franchiseId)
+                        .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Franchise not found")))
+                        .flatMap(franchise -> {
+                            franchise.setName(newName);
+                            return storageRepository.saveFranchise(franchise).then();
+                        })
+                );
     }
 
     @Override
     public Mono<Void> updateBranchName(Long branchId, String newName) {
         return storageRepository.existsBranchByName(newName)
-                .flatMap(exists -> {
-                    if (Boolean.TRUE.equals(exists)) {
-                        return Mono.error(new FranchiseException.AlreadyExistsException("Branch name already exists"));
-                    }
-                    return storageRepository.findBranchById(branchId)
-                            .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Branch not found")))
-                            .flatMap(branch -> {
-                                branch.setName(newName);
-                                return storageRepository.saveBranch(branch).then();
-                            });
-                });
+                .flatMap(exists -> Boolean.TRUE.equals(exists)
+                        ? Mono.error(new FranchiseException.AlreadyExistsException("Branch name already exists"))
+                        : storageRepository.findBranchById(branchId)
+                        .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Branch not found")))
+                        .flatMap(branch -> {
+                            branch.setName(newName);
+                            return storageRepository.saveBranch(branch).then();
+                        })
+                );
     }
 
     @Override
     public Mono<Void> updateProductName(Long productId, String newName) {
         return storageRepository.existsProductByName(newName)
-                .flatMap(exists -> {
-                    if (Boolean.TRUE.equals(exists)) {
-                        return Mono.error(new FranchiseException.AlreadyExistsException("Product name already exists"));
-                    }
-                    return storageRepository.findProductById(productId)
-                            .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Product not found")))
-                            .flatMap(product -> {
-                                product.setName(newName);
-                                return storageRepository.saveProduct(product).then();
-                            });
-                });
+                .flatMap(exists -> Boolean.TRUE.equals(exists)
+                        ? Mono.error(new FranchiseException.AlreadyExistsException("Product name already exists"))
+                        : storageRepository.findProductById(productId)
+                        .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Product not found")))
+                        .flatMap(product -> {
+                            product.setName(newName);
+                            return storageRepository.saveProduct(product).then();
+                        })
+                );
     }
-
 
     @Override
     public Mono<Void> removeProductFromBranch(Long branchId, Long productId) {
         return storageRepository.findActiveBranchProductByBranchIdAndProductId(branchId, productId)
                 .switchIfEmpty(Mono.error(new FranchiseException.NotFoundException("Branch-Product relation not found")))
-                .flatMap(bp -> {
-                    if (bp.getDeletedAt() != null) {
+                .flatMap(branchProduct -> {
+                    if (branchProduct.getDeletedAt() != null) {
                         return Mono.error(new FranchiseException.AlreadyExistsException("Product already removed from this branch"));
                     }
-                    bp.setDeletedAt(java.time.LocalDateTime.now());
-                    return storageRepository.saveBranchProduct(bp).then();
+                    branchProduct.setDeletedAt(java.time.LocalDateTime.now());
+                    return storageRepository.saveBranchProduct(branchProduct).then();
                 });
     }
 
     @Override
     public Flux<BranchProductInfo> findTopProductsByBranchForFranchise(Long franchiseId) {
-        return storageRepository.findTopProductsByBranchForFranchise(franchiseId);
+        return storageRepository.findTopProductsByBranchForFranchise(franchiseId)
+                .onErrorMap(e -> new FranchiseException.DBException("Error querying top products from DB: " + e.getMessage()));
     }
-
 }

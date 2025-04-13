@@ -17,4 +17,16 @@ public abstract class FranchiseException extends RuntimeException {
             super(message);
         }
     }
+
+    public static class DBException extends FranchiseException {
+        public DBException(String message) {
+            super(message);
+        }
+    }
+
+    public static class InvalidQueryParamException extends FranchiseException {
+        public InvalidQueryParamException(String message) {
+            super(message);
+        }
+    }
 }
