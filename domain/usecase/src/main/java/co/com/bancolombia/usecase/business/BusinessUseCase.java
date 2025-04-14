@@ -121,8 +121,8 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
                         .flatMap(product -> {
                             product.setName(newName);
                             return storageRepository.saveProduct(product).then();
-                        })
-                );
+                        }))
+                .onErrorMap(e -> new FranchiseException.DBException("Error querying update product from DB: " + e.getMessage()));
     }
 
     @Override
@@ -135,7 +135,8 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
                     }
                     branchProduct.setDeletedAt(java.time.LocalDateTime.now());
                     return storageRepository.saveBranchProduct(branchProduct).then();
-                });
+                })
+                .onErrorMap(e -> new FranchiseException.DBException("Error querying remove product from DB: " + e.getMessage()));
     }
 
     @Override
