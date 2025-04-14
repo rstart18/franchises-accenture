@@ -12,7 +12,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ProductMapper2 {
+public interface modelEntityMapper2 {
     @Mapping(target = "branches", ignore = true)
     Franchise toModel(FranchiseEntity franchiseEntity);
 

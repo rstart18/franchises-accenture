@@ -16,8 +16,6 @@ public interface BusinessRepository {
 
     Mono<Product> createProduct(Product product);
 
-    Mono<BranchProduct> createBranchProduct(BranchProduct branchProduct);
-
     Mono<BranchProduct> addProductToBranch(String productName, Long branchId, int stock);
 
     Mono<Void> updateProductStock(Long branchId, Long productId, int stock);

@@ -6,6 +6,7 @@ import co.com.bancolombia.api.dto.request.FranchiseRequestDto;
 import co.com.bancolombia.api.dto.request.ProductRequestDto;
 import co.com.bancolombia.api.dto.request.UpdateStockRequestDto;
 import co.com.bancolombia.api.dto.response.ApiResponse;
+import co.com.bancolombia.api.dto.response.BranchProductInfoResponseDto;
 import co.com.bancolombia.api.dto.response.BranchProductResponseDto;
 import co.com.bancolombia.api.dto.response.BranchResponseDto;
 import co.com.bancolombia.api.dto.response.FranchiseResponseDto;
@@ -114,12 +115,19 @@ public class Handler implements IHandler {
                 .then(ServerResponse.noContent().build());
     }
 
+    @Override
     public Mono<ServerResponse> getTopProductsByBranch(ServerRequest request) {
         return Mono.just(request.pathVariable(PATH_VARIABLE_FRANCHISE_ID))
                 .map(Long::valueOf)
                 .flatMapMany(businessRepository::findTopProductsByBranchForFranchise)
                 .collectList()
-                .flatMap(ServerResponse.ok()::bodyValue);
+                .flatMap(list ->
+                        ServerResponse.ok().bodyValue(
+                                ApiResponse.<BranchProductInfoResponseDto>builder()
+                                        .data(objectMapper.toDto(list))
+                                        .build()
+                        )
+                );
     }
 
     public Mono<ServerResponse> updateFranchiseName(ServerRequest request) {

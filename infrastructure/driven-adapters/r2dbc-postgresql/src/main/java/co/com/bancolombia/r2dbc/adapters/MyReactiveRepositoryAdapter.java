@@ -6,7 +6,7 @@ import co.com.bancolombia.model.BranchProduct;
 import co.com.bancolombia.model.BranchProductInfo;
 import co.com.bancolombia.model.Franchise;
 import co.com.bancolombia.model.Product;
-import co.com.bancolombia.r2dbc.mapper.ProductMapper2;
+import co.com.bancolombia.r2dbc.mapper.modelEntityMapper2;
 import co.com.bancolombia.r2dbc.repository.ReactiveBranchProductRepository;
 import co.com.bancolombia.r2dbc.repository.ReactiveBranchRepository;
 import co.com.bancolombia.r2dbc.repository.ReactiveFranchiseRepository;
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class MyReactiveRepositoryAdapter implements StorageRepository {
-    private final ProductMapper2 productMapper2;
+    private final modelEntityMapper2 modelEntityMapper2;
     private final ReactiveProductRepository reactiveProductRepository;
     private final ReactiveBranchProductRepository reactiveBranchProductRepository;
     private final ReactiveFranchiseRepository reactiveFranchiseRepository;
@@ -27,26 +27,26 @@ public class MyReactiveRepositoryAdapter implements StorageRepository {
 
     @Override
     public Mono<Franchise> saveFranchise(Franchise franchise) {
-        return this.reactiveFranchiseRepository.save(this.productMapper2.toEntity(franchise))
-                .map(productMapper2::toModel);
+        return this.reactiveFranchiseRepository.save(this.modelEntityMapper2.toEntity(franchise))
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override
     public Mono<Branch> saveBranch(Branch branch) {
-        return this.reactiveBranchRepository.save(this.productMapper2.toEntity(branch))
-                .map(productMapper2::toModel);
+        return this.reactiveBranchRepository.save(this.modelEntityMapper2.toEntity(branch))
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override
     public Mono<BranchProduct> saveBranchProduct(BranchProduct branchProduct) {
-        return this.reactiveBranchProductRepository.save(this.productMapper2.toEntity(branchProduct))
-                .map(productMapper2::toModel);
+        return this.reactiveBranchProductRepository.save(this.modelEntityMapper2.toEntity(branchProduct))
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override
     public Mono<Product> saveProduct(Product product) {
-        return this.reactiveProductRepository.save(this.productMapper2.toEntity(product))
-                .map(productMapper2::toModel);
+        return this.reactiveProductRepository.save(this.modelEntityMapper2.toEntity(product))
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override
@@ -67,24 +67,24 @@ public class MyReactiveRepositoryAdapter implements StorageRepository {
     @Override
     public Mono<Product> findProductByName(String productName) {
         return this.reactiveProductRepository.findByName(productName)
-                .map(productMapper2::toModel);
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override
     public Mono<Franchise> findFranchiseById(long franchiseId) {
         return this.reactiveFranchiseRepository.findById(franchiseId)
-                .map(productMapper2::toModel);
+                .map(modelEntityMapper2::toModel);
     }
 
     public Mono<Branch> findBranchById(long branchId) {
         return this.reactiveBranchRepository.findById(branchId)
-                .map(productMapper2::toModel);
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override
     public Mono<Product> findProductById(long productId) {
         return this.reactiveProductRepository.findById(productId)
-                .map(productMapper2::toModel);
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class MyReactiveRepositoryAdapter implements StorageRepository {
     @Override
     public Mono<BranchProduct> findActiveBranchProductByBranchIdAndProductId(long branchId, long productId) {
         return this.reactiveBranchProductRepository.findByBranchIdAndProductIdAndDeletedAtIsNull(branchId, productId)
-                .map(productMapper2::toModel);
+                .map(modelEntityMapper2::toModel);
     }
 
     @Override

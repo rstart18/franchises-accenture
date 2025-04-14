@@ -16,16 +16,20 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
     @Override
     public Mono<Franchise> createFranchise(Franchise franchise) {
         return storageRepository.existsFranchiseByName(franchise.getName())
-                .flatMap(existsByName ->
-                        Boolean.TRUE.equals(existsByName)
-                                ? Mono.error(new FranchiseException.AlreadyExistsException("Franchise name already exists"))
-                                : storageRepository.existsFranchiseByNit(franchise.getNit())
-                                .flatMap(existsByNit ->
-                                        Boolean.TRUE.equals(existsByNit)
-                                                ? Mono.error(new FranchiseException.AlreadyExistsException("Franchise NIT already exists"))
-                                                : storageRepository.saveFranchise(franchise)
-                                )
-                );
+                .flatMap(existsByName -> {
+                    if (Boolean.TRUE.equals(existsByName)) {
+                        return Mono.error(new FranchiseException.AlreadyExistsException("Franchise name already exists"));
+                    }
+
+                    return storageRepository.existsFranchiseByNit(franchise.getNit())
+                            .flatMap(existsByNit -> {
+                                if (Boolean.TRUE.equals(existsByNit)) {
+                                    return Mono.error(new FranchiseException.AlreadyExistsException("Franchise NIT already exists"));
+                                }
+
+                                return storageRepository.saveFranchise(franchise);
+                            });
+                });
     }
 
     @Override
@@ -36,11 +40,6 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
                                 ? Mono.error(new FranchiseException.AlreadyExistsException("Branch name already exists"))
                                 : storageRepository.saveBranch(branch)
                 );
-    }
-
-    @Override
-    public Mono<BranchProduct> createBranchProduct(BranchProduct branchProduct) {
-        return this.storageRepository.saveBranchProduct(branchProduct);
     }
 
     @Override
