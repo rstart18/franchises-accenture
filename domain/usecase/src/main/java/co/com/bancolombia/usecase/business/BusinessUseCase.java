@@ -16,10 +16,15 @@ public record BusinessUseCase(StorageRepository storageRepository) implements Bu
     @Override
     public Mono<Franchise> createFranchise(Franchise franchise) {
         return storageRepository.existsFranchiseByName(franchise.getName())
-                .flatMap(exists ->
-                        Boolean.TRUE.equals(exists)
+                .flatMap(existsByName ->
+                        Boolean.TRUE.equals(existsByName)
                                 ? Mono.error(new FranchiseException.AlreadyExistsException("Franchise name already exists"))
-                                : storageRepository.saveFranchise(franchise)
+                                : storageRepository.existsFranchiseByNit(franchise.getNit())
+                                .flatMap(existsByNit ->
+                                        Boolean.TRUE.equals(existsByNit)
+                                                ? Mono.error(new FranchiseException.AlreadyExistsException("Franchise NIT already exists"))
+                                                : storageRepository.saveFranchise(franchise)
+                                )
                 );
     }
 

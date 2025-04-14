@@ -1,9 +1,8 @@
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
-# Instalar herramientas de red necesarias para verificar la conexión
 RUN apt update && apt install -y netcat-openbsd iputils-ping curl
 
-COPY *.jar FranchisesAccenture.jar
+COPY applications/app-service/build/libs/FranchisesAccenture.jar FranchisesAccenture.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "FranchisesAccenture.jar"]

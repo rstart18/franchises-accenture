@@ -23,6 +23,8 @@ public interface StorageRepository {
 
     Mono<Product> findProductById(long productId);
 
+    Mono<Boolean> existsFranchiseByNit(String nit);
+    
     Mono<Boolean> existsFranchiseByName(String name);
 
     Mono<Boolean> existsBranchByName(String name);

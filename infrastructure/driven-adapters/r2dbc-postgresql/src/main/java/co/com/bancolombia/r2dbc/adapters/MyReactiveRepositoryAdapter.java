@@ -88,6 +88,11 @@ public class MyReactiveRepositoryAdapter implements StorageRepository {
     }
 
     @Override
+    public Mono<Boolean> existsFranchiseByNit(String nit) {
+        return this.reactiveFranchiseRepository.existsByNit(nit);
+    }
+
+    @Override
     public Mono<Boolean> existsBranchProduct(long branchId, long productId) {
         return this.reactiveBranchProductRepository.existsByBranchIdAndProductId(branchId, productId);
     }

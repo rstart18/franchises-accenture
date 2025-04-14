@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "ca26fd8a-8c22-4677-8fe1-a802adbdb226",
+		"name": "Franchises",
+		"description": "# 📦 API de Franquicias - Franchises\n\n> Sistema para gestión de franquicias, sucursales y productos con manejo de stock por sucursal. \n  \n\n---\n\n## 🌐 Base URL\n\n[http://localhost:8080/api/v1](http://localhost:8080/api/v1)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29743878",
+		"_collection_link": "https://galactic-moon-754549.postman.co/workspace/21272701-ac80-46aa-a588-8a70bd38872c/collection/29743878-ca26fd8a-8c22-4677-8fe1-a802adbdb226?action=share&source=collection_link&creator=29743878"
+	},
+	"item": [
+		{
+			"name": "Producto",
+			"item": [
+				{
+					"name": "Agregar producto a sucursal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productName\": \"Pepsi\",\r\n    \"branchId\": 1,\r\n    \"stock\": 67\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/branch-product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"branch-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Stock",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"stock\": 63\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/branch/:branchId/product/:productId/stock",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"branch",
+								":branchId",
+								"product",
+								":productId",
+								"stock"
+							],
+							"variable": [
+								{
+									"key": "branchId",
+									"value": "1"
+								},
+								{
+									"key": "productId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Nombre Producto",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/product/:productId/rename?name=Pepsi",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"product",
+								":productId",
+								"rename"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Pepsi"
+								}
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Producto",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/branch/:branchId/product/:productId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"branch",
+								":branchId",
+								"product",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "branchId",
+									"value": "1"
+								},
+								{
+									"key": "productId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Franquicia",
+			"item": [
+				{
+					"name": "Ver Top Productos por Stock en Sucursal",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Franquicia 1\",\r\n    \"nit\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/franchise/:franchiseId/top-products-by-branch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"franchise",
+								":franchiseId",
+								"top-products-by-branch"
+							],
+							"variable": [
+								{
+									"key": "franchiseId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Franquicia",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Franquicia 1\",\r\n    \"nit\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/franchise",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"franchise"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Nombre Franquicia",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/franchise/:franchiseId/rename?name=Exito%20Los%20Patios2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"franchise",
+								":franchiseId",
+								"rename"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Exito%20Los%20Patios2"
+								}
+							],
+							"variable": [
+								{
+									"key": "franchiseId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sucursal",
+			"item": [
+				{
+					"name": "Agregar Sucursal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Sucursal 1\",\r\n    \"franchiseId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/branch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"branch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Nombre Sucursal",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/branch/:branchId/rename?name=Sucursal%201",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"branch",
+								":branchId",
+								"rename"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Sucursal%201"
+								}
+							],
+							"variable": [
+								{
+									"key": "branchId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
